@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://patimahesweta26.github.io/shree-gopal-creation/sitemap.xml

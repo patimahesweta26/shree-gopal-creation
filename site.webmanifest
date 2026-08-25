@@ -1,0 +1,17 @@
+{
+  "name": "Shree Gopal Creations",
+  "short_name": "Shree Gopal",
+  "description": "LED signage, laser cutting and printing in Khurda, Odisha.",
+  "start_url": "index.html",
+  "display": "browser",
+  "background_color": "#f6f6f3",
+  "theme_color": "#04162f",
+  "icons": [
+    {
+      "src": "images/favicon.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
