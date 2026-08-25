@@ -30,17 +30,31 @@ for (const page of ALL_PAGES) {
   const desc = meta(html, /<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i);
   if (!desc) errors.push(`${page}: no meta description`); else descs.set(page, desc);
 
-  if (title && (title.length < 10 || title.length > 70)) errors.push(`${page}: title length ${title.length}`);
+  if (title && (title.length < 10 || title.length > 60)) errors.push(`${page}: title length ${title.length}`);
+  if (title && title.includes("&")) errors.push(`${page}: raw & in title (entities inflate social-checker counts)`);
   if (desc && (desc.length < 50 || desc.length > 160)) errors.push(`${page}: description length ${desc.length}`);
 
   const expectedCanonical = page === "index.html" ? SITE : SITE + page;
   const canonical = meta(html, /<link\s+rel=["']canonical["']\s+href=["']([^"']*)["']/i);
   if (canonical !== expectedCanonical) errors.push(`${page}: canonical "${canonical}" != "${expectedCanonical}"`);
 
-  for (const prop of ["og:title", "og:description", "og:image", "og:url"]) {
+  const ogTitle = meta(html, new RegExp(`<meta\\s+property=["']og:title["']\\s+content=["']([^"']*)["']`, "i"));
+  const ogDesc = meta(html, new RegExp(`<meta\\s+property=["']og:description["']\\s+content=["']([^"']*)["']`, "i"));
+  const twTitle = meta(html, new RegExp(`<meta\\s+(?:name|property)=["']twitter:title["']\\s+content=["']([^"']*)["']`, "i"));
+  const twDesc = meta(html, new RegExp(`<meta\\s+(?:name|property)=["']twitter:description["']\\s+content=["']([^"']*)["']`, "i"));
+
+  for (const prop of ["og:image", "og:url"]) {
     const v = meta(html, new RegExp(`<meta\\s+property=["']${prop}["']\\s+content=["']([^"']*)["']`, "i"));
     if (!v) errors.push(`${page}: missing ${prop}`);
   }
+  if (!ogTitle) errors.push(`${page}: missing og:title`);
+  else if (ogTitle.length > 60) errors.push(`${page}: og:title length ${ogTitle.length} > 60`);
+  if (!ogDesc) errors.push(`${page}: missing og:description`);
+  else if (ogDesc.length > 125) errors.push(`${page}: og:description length ${ogDesc.length} > 125`);
+  if (!twTitle) errors.push(`${page}: missing twitter:title`);
+  else if (twTitle.length > 60) errors.push(`${page}: twitter:title length ${twTitle.length} > 60`);
+  if (!twDesc) errors.push(`${page}: missing twitter:description`);
+  else if (twDesc.length > 125) errors.push(`${page}: twitter:description length ${twDesc.length} > 125`);
   const twCard = html.match(/<meta\s+(?:name|property)=["']twitter:card["']/i);
   if (!twCard) errors.push(`${page}: missing twitter:card`);
 
