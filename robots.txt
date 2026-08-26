@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://patimahesweta26.github.io/shree-gopal-creation/sitemap.xml
+Sitemap: https://shree-gopal-creation.vercel.app/sitemap.xml

@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const ROOT = process.cwd();
-const SITE = "https://patimahesweta26.github.io/shree-gopal-creation/";
+const SITE = "https://shree-gopal-creation.vercel.app/";
 const SERVICE_PAGES = [
   "led-signage.html",
   "laser-router-cutting.html",
@@ -24,6 +24,8 @@ for (const page of ALL_PAGES) {
   if (!fs.existsSync(p)) { errors.push(`missing page: ${page}`); continue; }
   const html = fs.readFileSync(p, "utf8");
 
+  if (html.includes("github.io")) errors.push(`${page}: still references dead github.io domain`);
+
   const title = meta(html, /<title>([^<]+)<\/title>/i);
   if (!title) errors.push(`${page}: no <title>`); else titles.set(page, title);
 
@@ -43,10 +45,13 @@ for (const page of ALL_PAGES) {
   const twTitle = meta(html, new RegExp(`<meta\\s+(?:name|property)=["']twitter:title["']\\s+content=["']([^"']*)["']`, "i"));
   const twDesc = meta(html, new RegExp(`<meta\\s+(?:name|property)=["']twitter:description["']\\s+content=["']([^"']*)["']`, "i"));
 
-  for (const prop of ["og:image", "og:url"]) {
+  for (const prop of ["og:url"]) {
     const v = meta(html, new RegExp(`<meta\\s+property=["']${prop}["']\\s+content=["']([^"']*)["']`, "i"));
     if (!v) errors.push(`${page}: missing ${prop}`);
   }
+  const ogImage = meta(html, new RegExp(`<meta\\s+property=["']og:image["']\\s+content=["']([^"']*)["']`, "i"));
+  if (!ogImage) errors.push(`${page}: missing og:image`);
+  else if (ogImage !== SITE + "images/og-image.png") errors.push(`${page}: og:image "${ogImage}" != ${SITE}images/og-image.png`);
   if (!ogTitle) errors.push(`${page}: missing og:title`);
   else if (ogTitle.length > 60) errors.push(`${page}: og:title length ${ogTitle.length} > 60`);
   if (!ogDesc) errors.push(`${page}: missing og:description`);
