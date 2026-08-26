@@ -4,8 +4,8 @@
   "description": "LED signage, laser cutting and printing in Khurda, Odisha.",
   "start_url": "index.html",
   "display": "browser",
-  "background_color": "#f6f6f3",
-  "theme_color": "#04162f",
+  "background_color": "#0c0c0c",
+  "theme_color": "#0c0c0c",
   "icons": [
     {
       "src": "images/favicon.png",
